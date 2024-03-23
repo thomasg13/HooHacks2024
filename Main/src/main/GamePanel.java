@@ -1,4 +1,8 @@
+package main;
 import javax.swing.JPanel;
+
+import entity.Player;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -9,7 +13,7 @@ public class GamePanel extends JPanel implements Runnable{
     final int originalTileSize = 16; //16x16 tile
     final int scale = 3;
 
-    final int tileSize = originalTileSize * scale; //48x48 tile
+    public final int tileSize = originalTileSize * scale; //48x48 tile
     final int maxScreenCol = 16;
     final int maxScreenRow = 12;
     final int screenWidth = tileSize * maxScreenCol;
@@ -19,6 +23,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
+    Player player = new Player(this, keyH);
 
 
     int playerX = 100;
@@ -111,29 +116,16 @@ public class GamePanel extends JPanel implements Runnable{
 
     public void update(){//can change to else if when only want object moving left right up down not diagonally
 
-        if(keyH.upPressed == true){
-            playerY -= playerSpeed;
-        }
-        if(keyH.downPressed == true){
-            playerY += playerSpeed;
-        }
-        if(keyH.leftPressed == true){
-            playerX -= playerSpeed;
-        }
-        if(keyH.rightPressed == true){
-            playerX += playerSpeed;
-        }
+        player.update();
     }
 
     public void paintComponent(Graphics g){
 
         super.paintComponent(g);
-
+        
         Graphics2D g2 = (Graphics2D)g;
 
-        g2.setColor(Color.white);
-
-        g2.fillRect(playerX, playerY, tileSize, tileSize);//x, y, width, height
+        player.draw(g2);
 
         g2.dispose();
     }

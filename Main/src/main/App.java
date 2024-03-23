@@ -1,3 +1,4 @@
+package main;
 import javax.swing.JFrame;
 
 public class App {
@@ -10,7 +11,7 @@ public class App {
 
         GamePanel gamePanel = new GamePanel();
         window.add(gamePanel);
-
+        System.out.println("hello word");
         window.pack();
 
         window.setLocationRelativeTo(null);
