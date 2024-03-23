@@ -17,5 +17,6 @@ public class App {
         window.setVisible(true);
 
         gamePanel.startGameThread();
+        System.out.println();
     }
 }
