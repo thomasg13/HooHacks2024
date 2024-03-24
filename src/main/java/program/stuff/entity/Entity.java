@@ -18,6 +18,7 @@ public abstract class Entity {
     public abstract void update();
     public abstract void draw(Graphics2D graphics2D);
 
+    
     public int getWorldX() {
         return worldX;
     }

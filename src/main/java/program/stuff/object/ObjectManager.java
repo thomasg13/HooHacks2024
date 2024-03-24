@@ -11,7 +11,7 @@ public class ObjectManager {
     }
 
     public void setObjects() {
-
+        /*
         // KEYS
         gamePanel.getObjects()[0] = new OBJ_Key();
         gamePanel.getObjects()[0].setWorldX(23 * gamePanel.getTileSize());
@@ -49,6 +49,6 @@ public class ObjectManager {
         gamePanel.getObjects()[6].setWorldX(10 * gamePanel.getTileSize());
         gamePanel.getObjects()[6].setWorldY(7 * gamePanel.getTileSize());
         gamePanel.getObjects()[6].setIndex(6);
-
+        */
     }
 }

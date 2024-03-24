@@ -1,6 +1,8 @@
 package program.stuff.entity;
 
 import javax.imageio.ImageIO;
+import java.util.Iterator;
+
 
 import program.stuff.GamePanel;
 import program.stuff.util.KeyHandler;
@@ -8,6 +10,7 @@ import program.stuff.util.KeyHandler;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Player extends Entity {
@@ -17,6 +20,8 @@ public class Player extends Entity {
     private final int screenX;
     private final int screenY;
     private int numberOfKeys = 0;
+    private ArrayList<Fireball> fireballs = new ArrayList<>();
+
 
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
         this.gamePanel = gamePanel;
@@ -37,8 +42,8 @@ public class Player extends Entity {
     }
 
     public void setDefaultValues() {
-        setWorldX(gamePanel.getTileSize() * 23);
-        setWorldY(gamePanel.getTileSize() * 21);
+        setWorldX(gamePanel.getTileSize() * 12);
+        setWorldY(gamePanel.getTileSize() * 18);
         setSpeed(4);
         setDirection("down");
     }
@@ -63,24 +68,112 @@ public class Player extends Entity {
     @Override
     public void update() {
 
+        System.out.println("Player Position - X: " + getWorldX() + ", Y: " + getWorldY());
+
         if (keyHandler.isUpPressed() || keyHandler.isDownPressed()
                 || keyHandler.isLeftPressed() || keyHandler.isRightPressed()) {
 
             if (keyHandler.isUpPressed()) {
                 setDirection("up");
-            } else if (keyHandler.isDownPressed()) {
+            }
+            if (keyHandler.isDownPressed()) {
                 setDirection("down");
-            } else if (keyHandler.isLeftPressed()) {
+            }
+            if (keyHandler.isLeftPressed()) {
                 setDirection("left");
-            } else if (keyHandler.isRightPressed()) {
+            }
+            if (keyHandler.isRightPressed()) {
                 setDirection("right");
             }
+
 
             checkCollision();
             moveIfCollisionNotDetected();
             checkAndChangeSpriteAnimationImage();
         }
+
+        if (keyHandler.isFirePressed()) {
+            fire(); // Call a method to create a fireball
+        }
+
+        Iterator<Fireball> iterator = fireballs.iterator();
+        while (iterator.hasNext()) {
+            Fireball fireball = iterator.next();
+            fireball.update();
+            // Check for removal conditions, such as collision or going off-screen
+            // if (shouldRemoveFireball) {
+            //     iterator.remove();
+            // }
+            System.out.println("Fireball Position - X: " + fireball.getWorldX() + ", Y: " + fireball.getWorldY());
+
+        }
     }
+
+    /*
+    private void fire() {
+        int offset = 48; // Adjust this value as needed for visibility
+        int fireballX = this.getWorldX() + offset; // Offset for visibility
+        int fireballY = this.getWorldY();
+        int moveX = 0;
+        int moveY = 0;
+
+        switch (getDirection()) {
+            case "up":    moveY = -1; break;
+            case "down":  moveY = 1; break;
+            case "left":  moveX = -1; break;
+            case "right": moveX = 1; break;
+        }
+
+        Fireball fireball = new Fireball(fireballX, fireballY, moveX, moveY);
+        fireballs.add(fireball);
+        System.out.println("Fireball fired: X=" + fireballX + " Y=" + fireballY); // Debugging fire action
+    }*/
+
+    private void fire() {
+        // Adjust these values according to your actual sprite sizes
+        int playerWidth = gamePanel.getTileSize(); // Width of the player sprite
+        int playerHeight = gamePanel.getTileSize(); // Height of the player sprite
+        int fireballWidth = 16; // Width of the fireball sprite
+        int fireballHeight = 16; // Height of the fireball sprite
+    
+        // Calculate offsets to center the fireball relative to the player's facing direction
+        int offsetX = (playerWidth - fireballWidth) / 2;
+        int offsetY = (playerHeight - fireballHeight) / 2;
+    
+        // Initial fireball position - centered on the player
+        int fireballX = this.getWorldX();
+        int fireballY = this.getWorldY();
+    
+        // Direction of movement for the fireball
+        int moveX = 0;
+        int moveY = 0;
+    
+        // Adjust fireball starting position based on player direction
+        switch (getDirection()) {
+            case "up":
+                moveY = -1;
+                //fireballY = this.getWorldY() - fireballHeight + offsetY; // Adjust to spawn above and centered
+                break;
+            case "down":
+                moveY = 1;
+                //fireballY = this.getWorldY() + playerHeight - offsetY; // Adjust to spawn below and centered
+                break;
+            case "left":
+                moveX = -1;
+                //fireballX = this.getWorldX() - fireballWidth + offsetX; // Adjust to spawn to the left and centered
+                break;
+            case "right":
+                moveX = 1;
+                //fireballX = this.getWorldX() + playerWidth - offsetX; // Adjust to spawn to the right and centered
+                break;
+        }
+    
+        Fireball fireball = new Fireball(fireballX, fireballY, moveX, moveY);
+        Fireball fireball2 = new Fireball(360, 280, moveX, moveY);
+        fireballs.add(fireball2);
+    }
+    
+    
 
     private void checkCollision() {
         setCollisionOn(false);
@@ -137,7 +230,15 @@ public class Player extends Entity {
     @Override
     public void draw(Graphics2D graphics2D) {
         graphics2D.drawImage(getDirectionalAnimationImage(), screenX, screenY, gamePanel.getTileSize(), gamePanel.getTileSize(), null);
+        graphics2D.setColor(Color.RED); // Set color for visibility
 
+
+        // Draw fireballs
+        for (Fireball fireball : fireballs) {
+            graphics2D.setColor(Color.BLUE); // Fireball color
+            graphics2D.drawRect(fireball.getWorldX(), fireball.getWorldY(), 16, 16); // Assuming 16x16 fireballs
+            fireball.draw(graphics2D); // Draw the actual fireball
+        }
     }
 
     private BufferedImage getDirectionalAnimationImage() {

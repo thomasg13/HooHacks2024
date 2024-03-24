@@ -1,6 +1,7 @@
 package program.stuff.object;
 
 import javax.imageio.ImageIO;
+
 import java.io.IOException;
 import java.util.Objects;
 
